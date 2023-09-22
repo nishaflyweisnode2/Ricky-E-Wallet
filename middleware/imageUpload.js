@@ -9,7 +9,11 @@ cloudinary.config({ cloud_name: authConfig.cloud_name, api_key: authConfig.api_k
 
 const storage = new CloudinaryStorage({ cloudinary: cloudinary, params: { folder: "Ricky-E-Wallet/profileImage", allowed_formats: ["jpg", "jpeg", "png", "PNG", "xlsx", "xls", "pdf", "PDF"], }, });
 const profileImage = multer({ storage: storage });
+const storage1 = new CloudinaryStorage({ cloudinary: cloudinary, params: { folder: "Ricky-E-Wallet/profileImage", allowed_formats: ["jpg", "jpeg", "png", "PNG", "xlsx", "xls", "pdf", "PDF"], }, });
+const bankImage = multer({ storage: storage1 });
+const storage2 = new CloudinaryStorage({ cloudinary: cloudinary, params: { folder: "Ricky-E-Wallet/profileImage", allowed_formats: ["jpg", "jpeg", "png", "PNG", "xlsx", "xls", "pdf", "PDF"], }, });
+const qrImage = multer({ storage: storage2 });
 
 
 
-module.exports = { profileImage, }
+module.exports = { profileImage, bankImage, qrImage }

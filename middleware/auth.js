@@ -55,18 +55,31 @@ const isAdmin = (req, res, next) => {
             });
         }
 
-        const user = await User.findOne({ _id: decoded.id });
+        try {
+            const user = await User.findOne({ _id: decoded._id });
 
-        if (!user) {
-            return res.status(400).send({
-                message: "The admin that this token belongs to does not exist",
+            if (!user) {
+                return res.status(400).send({
+                    message: "The user that this token belongs to does not exist",
+                });
+            }
+
+            if (user.userType !== "Admin") {
+                return res.status(403).send({
+                    message: "Access prohibited. Admin role is required!",
+                });
+            }
+
+            req.user = user;
+            next();
+        } catch (error) {
+            return res.status(500).json({
+                message: "Internal server error",
             });
         }
-        req.user = user;
-
-        next();
     });
 };
+
 
 
 

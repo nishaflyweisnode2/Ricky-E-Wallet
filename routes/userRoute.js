@@ -5,6 +5,7 @@ const router = express()
 
 const authJwt = require("../middleware/auth");
 
+const { profileImage } = require('../middleware/imageUpload');
 
 
 
@@ -17,5 +18,6 @@ module.exports = (app) => {
     app.post('/api/user/resend/:userId', auth.resendOTP);
     app.put('/api/user/update', [authJwt.verifyToken], auth.updateUser);
     app.put('/api/user/updateProfile', [authJwt.verifyToken], auth.updateProfile);
+    app.put('/api/user/upload-profile-picture', [authJwt.verifyToken], profileImage.single('image'), auth.uploadProfilePicture);
 
 }

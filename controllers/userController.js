@@ -134,7 +134,7 @@ exports.updateProfile = async (req, res) => {
         const user = await User.findById(userId);
 
         if (!user) {
-            return res.status(404).json({ message: 'User not found' });
+            return res.status(404).json({ status: 404, message: 'User not found' });
         }
 
         if (req.body.mobileNumber) {
@@ -155,8 +155,30 @@ exports.updateProfile = async (req, res) => {
 
         await user.save();
 
-        return res.status(200).json({ message: 'Profile updated successfully', user });
+        return res.status(200).json({ status: 200, message: 'Profile updated successfully', user });
     } catch (error) {
         return res.status(500).json({ message: 'Profile update failed', error: error.message });
     }
 };
+
+
+exports.uploadProfilePicture = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        if (!req.file) {
+            return res.status(400).json({ status: 400, error: "Image file is required" });
+        }
+
+        const updatedUser = await User.findByIdAndUpdate(userId, { image: req.file.path, }, { new: true });
+
+        if (!updatedUser) {
+            return res.status(404).json({ status: 404, message: 'User not found' });
+        }
+
+        return res.status(200).json({ status: 200, message: 'Profile picture uploaded successfully', data: updatedUser });
+    } catch (error) {
+        return res.status(500).json({ message: 'Failed to upload profile picture', error: error.message });
+    }
+};
+

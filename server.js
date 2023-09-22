@@ -20,6 +20,9 @@ app.get("/", (req, res) => {
 require('./routes/userRoute')(app);
 require('./routes/walletRoute')(app);
 require('./routes/transctionRoutes')(app);
+require('./routes/bankNameRoute')(app);
+require('./routes/bankAddRoute')(app);
+require('./routes/sendMoneyRoute')(app);
 
 mongoose.Promise = global.Promise;
 mongoose.set("strictQuery", true);

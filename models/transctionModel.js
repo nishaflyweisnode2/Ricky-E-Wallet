@@ -7,7 +7,7 @@ const transactionSchema = new mongoose.Schema({
   },
   type: {
     type: String,
-    enum: ['credit', 'debit'],
+    enum: ['credit', 'debit', 'transfer'],
   },
   amount: Number,
   description: String,
