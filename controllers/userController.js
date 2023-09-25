@@ -1,7 +1,7 @@
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 
-const { registrationSchema, generateOtp, otpSchema, resendOtpSchema, updateUserSchema, updateUserProfileSchema } = require('../validations/userValidation');
+const { registrationSchema, generateOtp, otpSchema, resendOtpSchema, resetSchema, updateUserSchema, updateUserProfileSchema } = require('../validations/userValidation');
 
 
 
@@ -16,7 +16,7 @@ exports.register = async (req, res) => {
 
         const existingUser = await User.findOne({ $or: [{ mobileNumber }] });
         if (existingUser) {
-            return res.status(400).json({ status: 400, message: 'User already exists' });
+            return res.status(400).json({ status: 400, message: 'User already exists with this mobile' });
         }
 
         const user = new User({
@@ -87,6 +87,75 @@ exports.resendOTP = async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal server error', details: err.message });
+    }
+};
+
+
+exports.forgotPassword = async (req, res) => {
+    try {
+        const { mobileNumber } = req.body;
+
+        const existingUser = await User.findOne({ mobileNumber });
+
+        if (!existingUser) {
+            return res.status(400).json({ status: 400, message: 'User Not exists' });
+        }
+        const resetCode = generateRandomCode();
+        console.log(`Reset code for ${mobileNumber}: ${resetCode}`);
+
+        const otp = generateOtp();
+        existingUser.otp = otp;
+        existingUser.resetCode = resetCode;
+
+        await existingUser.save();
+
+        return res.status(200).json({ status: 200, message: 'Reset code sent successfully', resetCode: resetCode, existingUser });
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to send reset code', error: error.message });
+    }
+};
+
+
+function generateRandomCode() {
+    const length = 10;
+    const charset = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    let code = '';
+    for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * charset.length);
+        code += charset.charAt(randomIndex);
+    }
+    return code;
+}
+
+
+exports.resetPassword = async (req, res) => {
+    try {
+        const { password, confirmPassword } = req.body;
+        const resetCode = req.params.resetCode
+
+        const { error } = resetSchema.validate({ resetCode, password, confirmPassword });
+
+        if (error) {
+            return res.status(400).json({ message: error.details[0].message });
+        }
+
+        const existingUser = await User.findOne({ resetCode: resetCode });
+
+        if (!existingUser) {
+            return res.status(400).json({ message: 'User does not exist' });
+        }
+
+        if (password !== confirmPassword) {
+            return res.status(400).json({ message: 'Password  and confirmPassword should be match' });
+        }
+
+        existingUser.password = password;
+
+        await existingUser.save();
+
+        return res.status(200).json({ status: 200, message: 'Password reset successfully', data: existingUser });
+    } catch (error) {
+        res.status(500).json({ message: 'Failed to reset password', error: error.message });
     }
 };
 

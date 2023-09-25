@@ -16,6 +16,8 @@ module.exports = (app) => {
     app.post('/api/user/register', auth.register);
     app.post('/api/user/verify/:userId', auth.verifyOTP);
     app.post('/api/user/resend/:userId', auth.resendOTP);
+    app.post('/api/user/forgot-password', auth.forgotPassword)
+    app.post('/api/user/reset-password/:resetCode', auth.resetPassword);
     app.put('/api/user/update', [authJwt.verifyToken], auth.updateUser);
     app.put('/api/user/updateProfile', [authJwt.verifyToken], auth.updateProfile);
     app.put('/api/user/upload-profile-picture', [authJwt.verifyToken], profileImage.single('image'), auth.uploadProfilePicture);

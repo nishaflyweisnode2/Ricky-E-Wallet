@@ -23,6 +23,11 @@ require('./routes/transctionRoutes')(app);
 require('./routes/bankNameRoute')(app);
 require('./routes/bankAddRoute')(app);
 require('./routes/sendMoneyRoute')(app);
+require('./routes/bannerRoute')(app);
+require('./routes/aboutUsRoute')(app);
+require('./routes/privacyPolicyRoute')(app);
+require('./routes/help&SupportRoute')(app);
+// require('./routes/upiRoute')(app);
 
 mongoose.Promise = global.Promise;
 mongoose.set("strictQuery", true);
