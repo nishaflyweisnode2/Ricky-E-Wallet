@@ -156,3 +156,80 @@ exports.updateBankDetails = async (req, res) => {
     }
 };
 
+
+// exports.searchBankAccounts = async (req, res) => {
+//     try {
+//         const { bankName, accountNumber, userName, mobileNumber } = req.query;
+
+//         const searchCriteria = {};
+
+//         if (bankName) {
+//             searchCriteria.bankName = bankName;
+//         }
+
+//         if (accountNumber) {
+//             searchCriteria.accountNumber = accountNumber;
+//         }
+
+//         if (userName) {
+//             const users = await User.find({ name: userName });
+//             const userIds = users.map((user) => user._id);
+//             searchCriteria.userId = { $in: userIds };
+//         }
+
+//         if (mobileNumber) {
+//             searchCriteria.mobileNumber = mobileNumber;
+//         }
+
+//         const bankAccounts = await Bank.find(searchCriteria)
+//             .populate('bankName')
+//             .populate('userId');
+
+//         return res.status(200).json({ message: 'Bank accounts found successfully', bankAccounts });
+//     } catch (error) {
+//         return res.status(500).json({ message: 'Failed to search bank accounts', error: error.message });
+//     }
+// };
+
+
+exports.searchBankAccounts = async (req, res) => {
+    try {
+        const { searchQuery } = req.query;
+
+        if (!searchQuery) {
+            return res.status(400).json({ message: 'Search query is required.' });
+        }
+
+        const searchRegex = new RegExp(searchQuery, 'i');
+
+        const banks = await Bank.aggregate([
+            {
+                $lookup: { from: 'users', localField: 'userId', foreignField: '_id', as: 'user' },
+            },
+            { $unwind: '$user' },
+            {
+                $lookup: { from: 'banknames', localField: 'bankName', foreignField: '_id', as: 'bankName' },
+            },
+            { $unwind: '$bankName' },
+            {
+                $match: {
+                    $or: [
+                        { 'user.name': searchRegex },
+                        { 'user.mobileNumber': searchRegex },
+                        { 'bankName.name': searchRegex },
+                        { accountNumber: searchRegex },
+                    ],
+                },
+            },
+        ]);
+
+        return res.status(200).json({ status: 200, message: 'Bank data found.', data: banks });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Internal server error while searching banks.' });
+    }
+};
+
+
+
+

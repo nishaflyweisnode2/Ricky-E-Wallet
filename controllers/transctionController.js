@@ -21,7 +21,7 @@ exports.checkBalance = async (req, res) => {
             return res.status(404).json({ status: 404, message: 'Wallet not found' });
         }
 
-        return res.status(200).json({ status: 200, balance: wallet.balance });
+        return res.status(200).json({ status: 200, data: wallet/*balance: wallet.balance*/ });
     } catch (error) {
         return res.status(500).json({ message: 'Failed to check balance', error: error.message });
     }
@@ -67,7 +67,7 @@ exports.makeTransaction = async (req, res) => {
         await transaction.save();
         await wallet.save();
 
-        return res.status(201).json({ status: 201, message: 'Transaction successful', transaction });
+        return res.status(201).json({ status: 201, message: 'Transaction successful', data: transaction });
     } catch (error) {
         return res.status(500).json({ message: 'Transaction failed', error: error.message });
     }
@@ -87,7 +87,7 @@ exports.getTransactionHistory = async (req, res) => {
         const wallet = await Wallet.findOne({ userId }).populate('transactions');
 
         if (!wallet) {
-            return res.status(404).json({status: 404, message: 'Wallet not found' });
+            return res.status(404).json({ status: 404, message: 'Wallet not found' });
         }
 
         return res.status(200).json({ status: 200, transactions: wallet.transactions });

@@ -27,7 +27,9 @@ require('./routes/bannerRoute')(app);
 require('./routes/aboutUsRoute')(app);
 require('./routes/privacyPolicyRoute')(app);
 require('./routes/help&SupportRoute')(app);
-// require('./routes/upiRoute')(app);
+require('./routes/upiRoute')(app);
+require('./routes/faqRoute')(app);
+require('./routes/exchangeRateRoute')(app);
 
 mongoose.Promise = global.Promise;
 mongoose.set("strictQuery", true);

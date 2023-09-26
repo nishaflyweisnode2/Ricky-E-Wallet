@@ -43,3 +43,21 @@ exports.getAllBankNames = async (req, res) => {
         return res.status(500).json({ message: 'Failed to fetch bank names', error: error.message });
     }
 };
+
+
+exports.searchBankNames = async (req, res) => {
+    try {
+        const { keyword } = req.query;
+
+        if (!keyword) {
+            return res.status(400).json({ status: 400, message: 'Keyword is required for searching bank names.' });
+        }
+
+        const regex = new RegExp(keyword, 'i');
+        const bankNames = await BankName.find({ name: regex });
+
+        return res.status(200).json({ status: 200, message: 'Bank names found successfully', bankNames });
+    } catch (error) {
+        return res.status(500).json({ message: 'Failed to search bank names', error: error.message });
+    }
+};
