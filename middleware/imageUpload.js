@@ -15,7 +15,9 @@ const storage2 = new CloudinaryStorage({ cloudinary: cloudinary, params: { folde
 const qrImage = multer({ storage: storage2 });
 const storage3 = new CloudinaryStorage({ cloudinary: cloudinary, params: { folder: "Ricky-E-Wallet/profileImage", allowed_formats: ["jpg", "jpeg", "png", "PNG", "xlsx", "xls", "pdf", "PDF"], }, });
 const bannerImage = multer({ storage: storage3 });
+const storage4 = new CloudinaryStorage({ cloudinary: cloudinary, params: { folder: "Ricky-E-Wallet/profileImage", allowed_formats: ["jpg", "jpeg", "png", "PNG", "xlsx", "xls", "pdf", "PDF"], }, });
+const DonationCampaignImage = multer({ storage: storage4 });
 
 
 
-module.exports = { profileImage, bankImage, bannerImage }
+module.exports = { profileImage, bankImage, qrImage, bannerImage, DonationCampaignImage }

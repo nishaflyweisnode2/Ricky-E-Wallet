@@ -30,6 +30,8 @@ require('./routes/help&SupportRoute')(app);
 require('./routes/upiRoute')(app);
 require('./routes/faqRoute')(app);
 require('./routes/exchangeRateRoute')(app);
+require('./routes/donationRoute')(app);
+require('./routes/DonationCampaignRoute')(app);
 
 mongoose.Promise = global.Promise;
 mongoose.set("strictQuery", true);

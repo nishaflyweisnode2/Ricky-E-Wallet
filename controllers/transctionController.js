@@ -95,3 +95,73 @@ exports.getTransactionHistory = async (req, res) => {
         return res.status(500).json({ message: 'Failed to fetch transaction history', error: error.message });
     }
 };
+
+
+exports.filterTransactions = async (req, res) => {
+    try {
+        const userId = req.user.id;
+
+        const { month, type } = req.query;
+
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ status: 404, message: 'User not found' });
+        }
+
+        const filter = { userId };
+
+        if (month) {
+            const monthDate = new Date(`${month}-01`);
+
+            if (isNaN(monthDate)) {
+                return res.status(400).json({ message: 'Invalid month format. Please provide a valid date.' });
+            }
+
+            const startOfMonth = new Date(monthDate.getFullYear(), monthDate.getMonth(), 1);
+            const endOfMonth = new Date(monthDate.getFullYear(), monthDate.getMonth() + 1, 0);
+
+            filter.timestamp = { $gte: startOfMonth, $lte: endOfMonth };
+        }
+
+        if (type) {
+            filter.type = type;
+        }
+
+        const transactions = await Transaction.find(filter);
+
+        return res.status(200).json({ status: 200, message: 'Filtered transactions found.', data: transactions });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ message: 'Internal server error while filtering transactions.' });
+    }
+};
+
+
+exports.searchTransactions = async (req, res) => {
+    try {
+        const { userName, type, startDate, endDate } = req.query;
+
+        const filter = {};
+
+        if (userName) {
+            filter.userId = await User.findOne({ name: userName }).select('_id');
+        }
+
+        if (type) {
+            filter.type = type;
+        }
+
+        if (startDate && endDate) {
+            filter.timestamp = { $gte: new Date(startDate), $lte: new Date(endDate) };
+        }
+
+        const transactions = await Transaction.find(filter).populate('userId', 'name');
+
+        return res.status(200).json({ status: 200, message: 'Transactions found.', data: transactions });
+    } catch (error) {
+        console.error(error);
+        return res.status(500).json({ status: 500, message: 'Internal server error while searching transactions.' });
+    }
+};
+
