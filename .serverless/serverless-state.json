@@ -179,7 +179,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/ricky-e-wallet/dev/1695821604750-2023-09-27T13:33:24.750Z/ricky-e-wallet.zip"
+                "S3Key": "serverless/ricky-e-wallet/dev/1697712326058-2023-10-19T10:45:26.058Z/ricky-e-wallet.zip"
               },
               "Handler": "server.handler",
               "Runtime": "nodejs18.x",
@@ -197,14 +197,14 @@
               "AppLogGroup"
             ]
           },
-          "AppLambdaVersionvJthb7wWNOpMeORQ02seWfZRCzvXU96J0Mw3ohc": {
+          "AppLambdaVersionC5nafjvuxhSar6avDIrD5RTnxXkSSBQKhwfxSNUmI4": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "AppLambdaFunction"
               },
-              "CodeSha256": "E1ut95fGHPy05Fs2J9z1ujPSTR1kqG1DGu/mlK2V7dU="
+              "CodeSha256": "ATG6zT06yGYs3zSWWGI63jGy+rKacrwgdLOePcj39KI="
             }
           },
           "ApiGatewayRestApi": {
@@ -425,7 +425,7 @@
               "AppLambdaPermissionApiGateway"
             ]
           },
-          "ApiGatewayDeployment1695821550459": {
+          "ApiGatewayDeployment1697712258912": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -490,7 +490,7 @@
           "AppLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "AppLambdaVersionvJthb7wWNOpMeORQ02seWfZRCzvXU96J0Mw3ohc"
+              "Ref": "AppLambdaVersionC5nafjvuxhSar6avDIrD5RTnxXkSSBQKhwfxSNUmI4"
             },
             "Export": {
               "Name": "sls-ricky-e-wallet-dev-AppLambdaFunctionQualifiedArn"
@@ -671,7 +671,7 @@
         "timeout": 6,
         "runtime": "nodejs18.x",
         "vpc": {},
-        "versionLogicalId": "AppLambdaVersionvJthb7wWNOpMeORQ02seWfZRCzvXU96J0Mw3ohc"
+        "versionLogicalId": "AppLambdaVersionC5nafjvuxhSar6avDIrD5RTnxXkSSBQKhwfxSNUmI4"
       }
     },
     "configValidationMode": "warn",
@@ -690,10 +690,10 @@
     },
     "layers": {},
     "isDashboardMonitoringPreconfigured": false,
-    "artifact": "C:\\Users\\Dev\\Downloads\\Ricky-E-Wallet\\.serverless\\ricky-e-wallet.zip"
+    "artifact": "C:\\Users\\Dev\\Downloads\\project\\Ricky-E-Wallet\\.serverless\\ricky-e-wallet.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/ricky-e-wallet/dev/1695821604750-2023-09-27T13:33:24.750Z",
+    "artifactDirectoryName": "serverless/ricky-e-wallet/dev/1697712326058-2023-10-19T10:45:26.058Z",
     "artifact": "ricky-e-wallet.zip"
   }
 }

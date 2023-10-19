@@ -1,7 +1,7 @@
 const User = require('../models/userModel');
 const jwt = require('jsonwebtoken');
 
-const { registrationSchema, generateOtp, otpSchema, resendOtpSchema, resetSchema, updateUserSchema, updateUserProfileSchema } = require('../validations/userValidation');
+const { registrationSchema, loginSchema1, generateOtp, otpSchema, resendOtpSchema, resetSchema, updateUserSchema, updateUserProfileSchema } = require('../validations/userValidation');
 
 
 
@@ -58,6 +58,43 @@ exports.verifyOTP = async (req, res) => {
 
 
         return res.status(200).json({ status: 200, message: 'OTP verified successfully', token: token, data: user });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Internal server error', details: err.message });
+    }
+};
+
+
+exports.login = async (req, res) => {
+    try {
+        const { mobileNumber, password } = req.body;
+
+        const { error } = loginSchema1.validate({ mobileNumber, password });
+        if (error) {
+            return res.status(400).json({ status: 400, error: error.details[0].message });
+        }
+
+        const user = await User.findOne({ mobileNumber });
+        if (!user) {
+            return res.status(404).json({ status: 404, message: 'User not found with this mobile number' });
+        }
+
+        if (user.mobileNumber !== mobileNumber) {
+            return res.status(401).json({ status: 401, message: 'Invalid Mobile Number' });
+        }
+
+        if (user.password !== password) {
+            return res.status(401).json({ status: 401, message: 'Invalid Password' });
+        }
+
+        user.isVerified = true;
+        await user.save();
+        const token = jwt.sign({ _id: user._id }, process.env.SECRET, { expiresIn: process.env.ACCESS_TOKEN_TIME });
+        console.log("Created Token:", token);
+        console.log(process.env.SECRET)
+
+
+        return res.status(200).json({ status: 200, message: 'Login successfully', token: token, data: user });
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Internal server error', details: err.message });
@@ -181,6 +218,9 @@ exports.updateUser = async (req, res) => {
         if (req.body.email) {
             user.email = req.body.email;
         }
+        if (req.body.password) {
+            user.password = req.body.password;
+        }
 
         await user.save();
 
@@ -250,4 +290,30 @@ exports.uploadProfilePicture = async (req, res) => {
         return res.status(500).json({ message: 'Failed to upload profile picture', error: error.message });
     }
 };
+
+
+exports.getAllUsers = async (req, res) => {
+    try {
+        const users = await User.find();
+        res.json(users);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ status: 500, error: 'Failed to get users' });
+    }
+};
+
+exports.getUserById = async (req, res) => {
+    try {
+        const userId = req.params.userId;
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ status: 404, message: 'User not found' });
+        }
+        res.json(user);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ status: 500, error: 'Failed to get user' });
+    }
+};
+
 

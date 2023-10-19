@@ -19,6 +19,13 @@ exports.resendOtpSchema = Joi.object({
     userId: Joi.string().length(24).hex().required()
 });
 
+
+exports.loginSchema1 = Joi.object({
+    // userId: Joi.string().length(24).hex().required(),
+    mobileNumber: Joi.string().required(),
+    password: Joi.string().min(6).required(),
+});
+
 exports.loginSchema = Joi.object({
     mobileNumber: Joi.string().required(),
 });
@@ -32,6 +39,7 @@ exports.resetSchema = Joi.object({
 exports.updateUserSchema = Joi.object({
     name: Joi.string().min(3).max(30).required(),
     email: Joi.string().required(),
+    password: Joi.string().required(),
 });
 
 
