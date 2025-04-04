@@ -4,7 +4,6 @@ const cors = require("cors");
 const mongoose = require("mongoose");
 require("dotenv").config();
 const compression = require("compression");
-const serverless = require("serverless-http");
 const app = express();
 const path = require("path");
 app.use(compression({ threshold: 500 }));
@@ -44,4 +43,4 @@ app.listen(process.env.PORT, () => {
     console.log(`Listening on port ${process.env.PORT}!`);
 });
 
-module.exports = { handler: serverless(app) };
+module.exports = app;
